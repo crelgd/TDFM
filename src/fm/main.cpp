@@ -42,6 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     wc.lpfnWndProc = TDFMWindow;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
+    wc.style = CS_DBLCLKS;
 
     RegisterClass(&wc);
 

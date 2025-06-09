@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
         val filesize = ftell(file);
         fseek(file, 0, SEEK_SET);
 
-        if (FS_CREATEFile(api, argv[3], strlen(argv[3])+1, atoi(argv[4]), atoi(argv[5]), filesize, files) != 0) {
+        if (FS_CREATEFile(api, argv[3], strlen(argv[3])+1, atoi(argv[4]), atoi(argv[5]), filesize, 0, files) != 0) {
             printf("read file error\n");
             fclose(file);
             if (api->table_all_files >= 1)

@@ -180,6 +180,7 @@ void YYReadFile(API* api, API_FILE_IN_TABLE* data) {
     data->sector_address_start = read4bytes(array, api->file_mem, &api->cur_pos);
     data->sector_number_end = read4bytes(array, api->file_mem, &api->cur_pos);
     data->sector_address_end = read4bytes(array, api->file_mem, &api->cur_pos);
+    data->path_for_directory = read4bytes(array, api->file_mem, &api->cur_pos);
 }
 
 API_FILE_IN_TABLE** FS_GetAllFiles(API* api) {
@@ -281,18 +282,19 @@ int is_empty_file(API_FILE_IN_TABLE* f) {
            f->number_sector == 0 &&
            f->sector_address_start == 0 &&
            f->sector_number_end == 0 &&
-           f->sector_address_end == 0;
+           f->sector_address_end == 0 &&
+           f->path_for_directory == 0;
 }
 
-int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte file_type, val file_size,
+int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte file_type, val file_size, val path_for_directory,
     API_FILE_IN_TABLE** all_files)
 {
     API_FILE_IN_TABLE file = {-1};
 
-    val idk = api->table_global_size / 22;
+    val idk = api->table_global_size / 26;
     api->cur_pos = SECTOR_SIZE+16;
 
-    byte cmpdata[22] = { 0 };
+    byte cmpdata[26] = { 0 };
 
     int FLAG = 0;
 
@@ -304,7 +306,7 @@ int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte
                 break;
             }
         }
-        api->cur_pos -= 22;
+        api->cur_pos -= 26;
     } else FLAG = 1;
 
     if (FLAG) {
@@ -320,7 +322,7 @@ int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte
         int* end_data_totable = convert_address_from_number(start_data+file_size+filename_size, SECTOR_SIZE);
 
         FS_LoadFileTitle(api, dir_id, filename_size, file_type, start_data_totable[0], start_data_totable[1], end_data_totable[0], 
-            end_data_totable[1]);
+            end_data_totable[1], path_for_directory);
 
         free(start_data_totable);
         free(end_data_totable);
@@ -342,7 +344,7 @@ int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte
 }
 
 int FS_LoadFileTitle(API* api, val dir_id, byte filename_size, byte file_type, val number_sector,
-    val sector_address_start, val sector_number_end, val sector_address_end) 
+    val sector_address_start, val sector_number_end, val sector_address_end, val path_for_directory) 
 {
     write4bytes(dir_id, api->file_mem, &api->cur_pos);
     api->file_mem[api->cur_pos++] = filename_size;
@@ -351,6 +353,7 @@ int FS_LoadFileTitle(API* api, val dir_id, byte filename_size, byte file_type, v
     write4bytes(sector_address_start, api->file_mem, &api->cur_pos);
     write4bytes(sector_number_end, api->file_mem, &api->cur_pos);
     write4bytes(sector_address_end, api->file_mem, &api->cur_pos);
+    write4bytes(path_for_directory, api->file_mem, &api->cur_pos);
 
     return 0;
 }

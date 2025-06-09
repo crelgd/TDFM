@@ -6,8 +6,9 @@ val cur_dir = 0;
 int cur_split = 0;
 val readed_files;
 int flag = 0;
-POINT curpos;
-int click_status = 0;
+POINT curpos = {0};
+
+API_FILE_IN_TABLE** cur_files;
 
 LRESULT __stdcall TDFMWindow(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     switch (Msg)
@@ -37,13 +38,14 @@ LRESULT __stdcall TDFMWindow(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
         FillRect(memDC, &ps.rcPaint, (HBRUSH (RGB(247, 247, 247))));
 
         readed_files;
-        API_FILE_IN_TABLE** cur_files = getCurrentDirs(&cur_dir, &disk_files, &disk, &readed_files);
+        cur_files = getCurrentDirs(&cur_dir, &disk_files, &disk, &readed_files);
 
         for (int i = 0; i < 15; i++) {
             if ((readed_files - i) == 0) break;
             if (cur_split+i > readed_files-1) break;
             char* filename = FS_ReadFileName(disk, cur_files[i+cur_split]);
-            DRAW_FSELEMENT(memDC, folder_img, file_img, filename, curpos, win, cur_files[i+cur_split]->file_type, 20, 40*i+20);
+            DRAW_FSELEMENT(memDC, folder_img, file_img, filename, curpos, win, cur_files[i+cur_split]->file_type, 
+                20, 40*i+20);
             FS_Free(filename);
         }
 
@@ -110,7 +112,20 @@ LRESULT __stdcall TDFMWindow(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) 
     }
 
     case WM_LBUTTONDBLCLK: {
-        click_status = 1;
+        GetCursorPos(&curpos);
+        ScreenToClient(hWnd, &curpos);
+
+        for (int i = 0; i < 15; i++) {
+            if ((readed_files - i) == 0) break;
+            if (cur_split+i > readed_files-1) break;
+            if (cur_files[i+cur_split]->file_type == 0) {
+                if (curpos.y > (40*i+20)+10 && curpos.y < (40*i+20)+34) {
+                    cur_dir = cur_files[i+cur_split]->path_for_directory;
+                    break;
+                }
+            }
+        }
+
         InvalidateRect(hWnd, NULL, FALSE);
         return 0;
     }

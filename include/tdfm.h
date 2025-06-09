@@ -45,6 +45,7 @@ typedef struct {
     val sector_address_start; // 4
     val sector_number_end; // 4
     val sector_address_end; //4
+    val path_for_directory; // 4
 } API_FILE_IN_TABLE;
 
 #ifdef __cplusplus
@@ -82,11 +83,11 @@ _TDFM_API char* FS_ReadFileName(API* api, API_FILE_IN_TABLE* file);
 _TDFM_API byte* FS_ReadFile(API* api, API_FILE_IN_TABLE* file, int* size);
 
 // stworzenie tytuła pliku
-_TDFM_API int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte file_type, val file_size,
+_TDFM_API int FS_CREATEFile(API* api, char* filename, byte filename_size, val dir_id, byte file_type, val file_size, val path_for_directory,
     API_FILE_IN_TABLE** all_files);
 // stworzy dane o pliku w tabelu
 _TDFM_API int FS_LoadFileTitle(API* api, val dir_id, byte filename_size, byte file_type, val number_sector,
-    val sector_address_start, val sector_number_end, val sector_address_end);
+    val sector_address_start, val sector_number_end, val sector_address_end, val path_for_directory);
 
 // zapisuje dane z zewnętrznego pliku
 _TDFM_API int FS_LoadFileToTitle(API* api, API_FILE_IN_TABLE* file, byte* file_data, val data_size_bytes);

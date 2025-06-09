@@ -14,7 +14,8 @@ IMAGE* IMAGE_INIT(const char* texture_name, API** api, API_FILE_IN_TABLE*** file
 
 void DRAW_IMAGE(IMAGE* img, HDC hdc, int x, int y, int width, int height);
 
-void DRAW_FSELEMENT(HDC hdc, IMAGE* folder_img, IMAGE* file_img, const char* filename, POINT curpos, RECT win, int file_type, int x, int y);
+void DRAW_FSELEMENT(HDC hdc, IMAGE* folder_img, IMAGE* file_img, const char* filename, 
+    POINT curpos, RECT win, int file_type, int x, int y);
 
 wchar_t *convertCharArrayToLPCWSTR(const char* charArray);
 

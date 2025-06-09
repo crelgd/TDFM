@@ -51,8 +51,9 @@ wchar_t *convertCharArrayToLPCWSTR(const char* charArray)
     return wString;
 }
 
-void DRAW_FSELEMENT(HDC hdc, IMAGE* folder_img, IMAGE* file_img, const char* filename, POINT curpos, RECT win, int file_type, int x, int y) {
-
+void DRAW_FSELEMENT(HDC hdc, IMAGE* folder_img, IMAGE* file_img, const char* filename, 
+    POINT curpos, RECT win, int file_type, int x, int y)
+{
     if (curpos.y < 34+y && curpos.y > 10+y) {
         HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 
@@ -63,8 +64,9 @@ void DRAW_FSELEMENT(HDC hdc, IMAGE* folder_img, IMAGE* file_img, const char* fil
         DeleteObject(pen);
     }
 
-    if (file_type == 0)
+    if (file_type == 0) {
         DRAW_IMAGE(folder_img, hdc, 10+x, 10+y, 24, 24);
+    }
     else DRAW_IMAGE(file_img, hdc, 10+x, 10+y, 24, 24);
 
     HFONT hfont = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_CHARACTER_PRECIS, 
