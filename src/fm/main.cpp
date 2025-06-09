@@ -4,6 +4,7 @@
 #include "win_utils.h"
 
 #include <cstdlib>
+#include <string>
 
 IMAGE* folder_img;
 IMAGE* file_img;
@@ -21,8 +22,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         return 0;
     }
 
-    API* api = FS_OpenAPI("fm.pak");
+    char path[1024], pak[1024] = {0};
+    GetModuleFileNameA(NULL, path, 1024);
+    int end;
+    for (int i = strlen(path); i >= 0; i--) {
+        if (path[i] == '\\') {
+            end = i;
+            break;
+        }
+    }
+    memcpy(pak, path, end+1);
+    pak[end] = '\\'; pak[end+1] = '\0';
+    strcat_s(pak, sizeof(pak), "fm.pak");
+
+    API* api = FS_OpenAPI(pak);
     if (!api) {
+        MessageBoxA(NULL, pak, "DEBUG: Full path to pak", 0);
         return 1;
     }
     char*msgg;
